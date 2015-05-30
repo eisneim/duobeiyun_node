@@ -5,12 +5,16 @@
  * Time: 10:33:52
  * Contact: eisneim1@sina.com
  */
-// var https = require("https");
+
+// var https = require("https"); 这里使用https 或者http都可以
 var http = require("http");
 var querystring = require("querystring");
 var fs = require("fs");
 var crypto = require("crypto");
-
+/**
+ * 时间处理的简单模块，仅用于format 时间的格式，例如： 2015-6-1 12:12
+ * @type {}
+ */
 var dateTime = require('../../util/util.datetime.js');
 
 class Duobei {
@@ -103,7 +107,7 @@ class Duobei {
 		return crypto.createHash("md5").update( query ).digest("hex");
 	}
 	/**
-	 * [post description]
+	 * POST请求
 	 * @param  {[type]} url  [description]
 	 * @param  {[type]} body [description]
 	 * @return {[type]}      [description]
@@ -115,9 +119,6 @@ class Duobei {
 		  hostname: this.host,
 		  // port: 443,
 		  path: path,
-		  // hostname: "localhost",
-		  // port:"3000",
-		  // path: "/dev/formencode",
 		  method: 'POST',
 		  agent: false,
 		  headers:{
@@ -129,7 +130,9 @@ class Duobei {
 
 		console.log("DuoBeiYun post to:",options.hostname+options.path )
 		console.log( formData )
-
+		/**
+		 * 返回一个Promise， 这里使用的是ES6的原始Proimse, 你可以替换成bluebired或者其他Promise库
+		 */
 		return new Promise( (resolve,reject) => {
 			var resData="";
 			var req = http.request(options, function(res) {
@@ -148,12 +151,15 @@ class Duobei {
 			});
 
 			req.on('error', reject );
-			// write data to request formData
 			req.write(formData);
 			req.end();
 		});
 	}
-
+	/**
+	 * GET请求
+	 * @param {[type]} path      [description]
+	 * @param {[type]} urlParams [description]
+	 */
 	GET(path, urlParams ){
 
 		var options = {
@@ -328,6 +334,10 @@ class Duobei {
 
 /**
  * export this out;
+ * options = {
+ * 		appKey: "sssssss",
+ * 		partner: "23423423423",
+ * }
  */
 module.exports = function(options){
 	if(!options) options = require('../../_config/secret.js').duobei ;
